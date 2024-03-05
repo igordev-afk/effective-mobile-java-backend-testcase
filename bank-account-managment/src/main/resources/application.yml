@@ -1,0 +1,29 @@
+spring:
+  application:
+    name: bank-account-management
+  datasource:
+    url: jdbc:postgresql://localhost:5432/bank_account_db
+    username: postgres
+    password: 1
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: accounts-group
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+  constants:
+    rate-of-interest: 1.05
+    max-rate-of-interest: 2.07
+
+server:
+  external-jwt-validation-endpoint: "http://localhost:8080/validate_token"
+  port: 8081
+

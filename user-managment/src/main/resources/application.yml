@@ -1,0 +1,27 @@
+application-description: "Simple bank-backend application"
+application-version: "v1"
+
+spring:
+  application:
+    name: user-management
+  datasource:
+    url: jdbc:postgresql://localhost:5432/user_db
+    username: postgres
+    password: 1
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: users-group
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+  jwt:
+    secret: "8w9U7eupsVcokibCDUjO59xuTkl9XJvtMJnx0O7ysqmlmYROYHm88YASpGOsPKFP"
+

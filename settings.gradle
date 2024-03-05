@@ -1,0 +1,3 @@
+rootProject.name = 'java-backend-effective-mobile'
+include("bank-account-managment")
+include("user-managment")
