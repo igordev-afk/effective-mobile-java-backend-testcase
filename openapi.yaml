@@ -1,0 +1,376 @@
+openapi: 3.0.3
+info:
+  title: "OpenAPI spec for test case"
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080/
+    description: User management server
+  - url: http://localhost:8081/
+    description: Bank account management server
+paths:
+  /users:
+    post:
+      summary: Create new user
+      tags:
+        - User management API
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRegistrationDTO'
+      responses:
+        '200':
+          description: User creation is processing
+          content:
+            text/plain:
+              schema:
+                type: string
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseMessage'
+  /users/{id}/update:
+    patch:
+      summary: Update user
+      tags:
+        - User management API
+      parameters:
+        - name: id
+          in: path
+          description: ID of the user to update
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserUpdateDTO'
+      responses:
+        '200':
+          description: User updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseMessage'
+  /users/{id}/delete_field:
+    delete:
+      summary: Delete user field
+      tags:
+        - User management API
+      parameters:
+        - name: id
+          in: path
+          description: ID of the user to update
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: type
+          in: query
+          description: Type of field to delete (email or phone)
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: User field deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseMessage'
+  /authenticate:
+    post:
+      summary: "Authenticate user"
+      tags:
+        - "Authentication"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthenticationDTO'
+      responses:
+        '200':
+          description: "Successful authentication"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseMessage'
+        '400':
+          description: "Bad request"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseMessage'
+        '401':
+          description: "Unauthorized"
+  /transfer:
+    post:
+      summary: "Transfer funds"
+      tags:
+        - "Transfer"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TransferDTO'
+      responses:
+        '200':
+          description: "Successful transfer"
+          content:
+            text/plain:
+              schema:
+                type: "string"
+        '401':
+          description: "Unauthorized"
+        '400':
+          description: "Bad request"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseMessage'
+  /search:
+    get:
+      summary: "Find users with filters"
+      tags:
+        - "User Search API"
+      parameters:
+        - name: "page"
+          in: "query"
+          description: "Page number"
+          required: true
+          schema:
+            type: "integer"
+        - name: "size"
+          in: "query"
+          description: "Number of items per page"
+          required: false
+          schema:
+            type: "integer"
+            default: 10
+        - name: "sortField"
+          in: "query"
+          description: "Field to sort by"
+          required: false
+          schema:
+            type: "string"
+            default: "firstName"
+        - name: "sortOrder"
+          in: "query"
+          description: "Sort order ('asc' or 'desc')"
+          required: false
+          schema:
+            type: "string"
+            default: "asc"
+        - name: "dateOfBirth"
+          in: "query"
+          description: "Date of birth"
+          required: false
+          schema:
+            type: "string"
+            format: "date"
+        - name: "phone"
+          in: "query"
+          description: "Phone number"
+          required: false
+          schema:
+            type: "string"
+        - name: "fullName"
+          in: "query"
+          description: "Full name"
+          required: false
+          schema:
+            type: "string"
+        - name: "email"
+          in: "query"
+          description: "Email address"
+          required: false
+          schema:
+            type: "string"
+      responses:
+        '200':
+          description: "Successful operation"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Page'
+        '400':
+          description: "Bad request"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseMessage'
+        '401':
+          description: "Unauthorized"
+                
+components:
+  schemas:
+  
+    UserRegistrationDTO:
+      type: object
+      properties:
+        login:
+          type: string
+        password:
+          type: string
+        phone:
+          type: string
+        email:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        patronymic:
+          type: string
+        dateOfBirth:
+          type: string
+          format: date
+        amount:
+          type: number
+          format: double
+      required:
+        - login
+        - password
+        - phone
+        - email
+        - firstName
+        - lastName
+        - dateOfBirth
+        - amount
+        
+    UserUpdateDTO:
+      type: object
+      properties:
+        phone:
+          type: string
+        email:
+          type: string
+          
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        login:
+          type: string
+        password:
+          type: string
+        phone:
+          type: string
+        email:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        patronymic:
+          type: string
+        dateOfBirth:
+          type: string
+          format: date
+      required:
+        - id
+        - login
+        - password
+        - phone
+        - email
+        - firstName
+        - lastName
+        - dateOfBirth
+  
+    ResponseMessage:
+      type: object
+      properties:
+        message:
+          type: string
+    
+    Page:
+      type: "object"
+      properties:
+        content:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/User"
+        pageable:
+          type: "object"
+          properties:
+            sort:
+              type: "object"
+            offset:
+              type: "integer"
+            pageNumber:
+              type: "integer"
+            pageSize:
+              type: "integer"
+            paged:
+              type: "boolean"
+            unpaged:
+              type: "boolean"
+        totalPages:
+          type: "integer"
+        totalElements:
+          type: "integer"
+        last:
+          type: "boolean"
+        size:
+          type: "integer"
+        number:
+          type: "integer"
+        sort:
+          type: "object"
+        numberOfElements:
+          type: "integer"
+        first:
+          type: "boolean"
+        empty:
+          type: "boolean"
+    
+    AuthenticationDTO:
+      type: "object"
+      properties:
+        email:
+          type: "string"
+          format: "email"
+        password:
+          type: "string"
+      required:
+        - email
+        - password
+    
+    TransferDTO:
+      type: "object"
+      properties:
+        from:
+          type: "integer"
+          format: "int64"
+        to:
+          type: "integer"
+          format: "int64"
+        amount:
+          type: "number"
+          format: "double"
+      required:
+        - from
+        - to
+        - amount
